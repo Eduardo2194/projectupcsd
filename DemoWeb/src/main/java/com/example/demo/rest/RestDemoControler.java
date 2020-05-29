@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.model.Persona;
 import com.example.demo.repo.IPersonaRepo;
 
-@RestController
-@RequestMapping("/personas")
+//@RestController
+//@RequestMapping("/personas")
 public class RestDemoControler {
 
 	@Autowired
