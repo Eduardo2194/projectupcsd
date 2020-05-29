@@ -5,16 +5,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <p th:text="'Hello, ' + ${name} + '!'" />
-    
-    <table>
-		<th:block th:each="per : ${persona}">
-				<tr>
- 				    <td th:text="${per.idPersona}">...</td>
-				    <td th:text="${per.nombre}">...</td>
-				</tr>
-		</th:block>    
+
+ <div aling="Center">
+ 	<h1>Registro de Asesores</h1>   
+    <table border="1">
+		<thead>
+			<tr>
+				<th>Persona ID</th>
+				<th>Nombre</th>
+				<th>DNI</th>
+				<th>Correo</th>
+			</tr>
+		</thead>	
     </table>
-    
+ </div>    
 </body>
 </html>
