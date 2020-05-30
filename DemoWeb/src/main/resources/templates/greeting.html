@@ -6,17 +6,29 @@
 </head>
 <body>
 
- <div aling="Center">
- 	<h1>Registro de Asesores</h1>   
-    <table border="1">
+ <div aling="center">
+ 	<h1>Registro de Asesores</h1>  
+ 	<a href="nuevo"> Crear nuevo asesor</a> 
+ 	<br/><br/>
+    <table border="1" cellpadding="10">
 		<thead>
 			<tr>
-				<th>Persona ID</th>
 				<th>Nombre</th>
 				<th>DNI</th>
 				<th>Correo</th>
+				<th>Accion</th>
 			</tr>
-		</thead>	
+		</thead>
+		<tbody>
+			<tr	th:each="persona : ${listPersonas}">
+				<td th:text="${persona.nombre}">Nombre</td>
+				<td th:text="${persona.dni}">DNI</td>
+				<td th:text="${persona.correo}">Correo</td>
+				<td>
+				  
+				</td>
+			</tr>
+		</tbody>	
     </table>
  </div>    
 </body>

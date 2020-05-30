@@ -21,15 +21,23 @@ public class DemoController {
 	
 	
 	@RequestMapping("/")
-	public String viewHomePage(Model model) {
+	public String viewHomePersona(Model model) {
 	 
 		List<Persona> listPersona = service.lisAll();
-		model.addAttribute("listPersona", listPersona);
+		model.addAttribute("listPersonas", listPersona);
 		
 	    return "greeting";
 	}
 	
 	
+	@RequestMapping("/nuevo")
+	public String showNewPersona(Model model) {
+	 
+		Persona persona = new Persona();
+		model.addAttribute("persona", persona);
+		
+	    return "nuevo_asesor";
+	}
 	
 	
 	

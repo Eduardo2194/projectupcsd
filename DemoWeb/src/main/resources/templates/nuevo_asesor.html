@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Crear nuevo asesor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+ <div aling="center">
+ 	<h1>Nuevo asesor</h1>  
+ 	<br/>
+ 	<form action="#" th:action="@{/save}" th:object="${persona}" method="post">
+ 		 <table>
+ 		 <tr>
+ 		 	<td>Nombre:</td>
+ 		 	<td><input type="text" th:field="{nombre}" /></td>
+ 		    <td>DNI:</td>
+ 		 	<td><input type="text" th:field="{dni}" /></td>
+ 		 	<td>Correo:</td>
+ 		 	<td><input type="text" th:field="{correo}" /></td>
+ 		 </tr>
+ 		</table>
+ 	</form>
+ </div>    
+</body>
+</html>

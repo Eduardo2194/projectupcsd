@@ -16,8 +16,8 @@ public class DatabaseConfig {
 	public DataSource dataSource() {
 		HikariConfig config = new HikariConfig();
 		config.setJdbcUrl(dbUrl);
-		config.setUsername("cwyonmgrvzdxkp");
-		config.setPassword("b2d27d1f222068924c9d1106a55ca127692b31cbe1e17aacce94de8e48d8ef40");
+		config.setUsername("phqacqpsvttknm");
+		config.setPassword("3a9824597bf125f5c3f1c835b39bfcfd417782f91d87fd8492d02767291058a5");
 		config.setMaximumPoolSize(10);
 		return new HikariDataSource(config);
 	}
