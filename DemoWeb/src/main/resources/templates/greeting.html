@@ -6,7 +6,7 @@
 </head>
 <body>
 
- <div aling="center">
+ <div align="center">
  	<h1>Registro de Asesores</h1>  
  	<a href="nuevo"> Crear nuevo asesor</a> 
  	<br/><br/>
@@ -25,7 +25,8 @@
 				<td th:text="${persona.dni}">DNI</td>
 				<td th:text="${persona.correo}">Correo</td>
 				<td>
-				  
+				   <a th:href="@{'/editar/' + ${persona.idPersona}}">editar</a>
+				   <a th:href="@{'/eliminar/' + ${persona.idPersona}}">eliminar</a>
 				</td>
 			</tr>
 		</tbody>	
