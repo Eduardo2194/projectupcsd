@@ -18,16 +18,21 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.upc.sistemasdistribuidos.bussines.MovimientoRest;
 import com.upc.sistemasdistribuidos.bussines.UsuarioRest;
 import com.upc.sistemasdistribuidos.context.ContextHolder;
 import com.upc.sistemasdistribuidos.context.UserContext;
+import com.upc.sistemasdistribuidos.dao.SaldoDAO;
 import com.upc.sistemasdistribuidos.dao.UsuarioDAO;
 import com.upc.sistemasdistribuidos.enums.EstadoUsuarioEnum;
 import com.upc.sistemasdistribuidos.enums.TipoUsuarioEnum;
 import com.upc.sistemasdistribuidos.exceptions.BackEndException;
+import com.upc.sistemasdistribuidos.model.Movimiento;
 import com.upc.sistemasdistribuidos.model.Usuario;
+import com.upc.sistemasdistribuidos.request.GestionarSaldoRequest;
 import com.upc.sistemasdistribuidos.request.GestionarUsuarioRequest;
 import com.upc.sistemasdistribuidos.request.LoginUsuarioRequest;
+import com.upc.sistemasdistribuidos.response.GestionarSaldoResponse;
 import com.upc.sistemasdistribuidos.response.GestionarUsuarioResponse;
 import com.upc.sistemasdistribuidos.response.LoginUsuarioResponse;
 import com.upc.sistemasdistribuidos.service.UserProcessService;
@@ -47,8 +52,8 @@ public class UserProcessServiceImpl implements UserProcessService {
 	@Autowired
 	private UsuarioDAO usuarioDAO;
 	
-//	@Autowired
-//	private UsuarioPenalidadDAO usuarioPenalidadDAO;
+	@Autowired
+	private SaldoDAO saldoDAO;
 //	
 //	@Autowired
 //	private PenalidadDAO penalidadDAO;
@@ -242,51 +247,68 @@ public class UserProcessServiceImpl implements UserProcessService {
 		LOGGER.traceExit(methodName);
 	}
 
+	
+	
+	@Override
+	public void recargarSaldo() {
+		final String methodName = "registrar saldo";
+		LOGGER.traceEntry(methodName);
+		
+		UserContext context = ContextHolder.get(UserContext.class);
+		GestionarSaldoRequest request= context.getGestionarSaldoRequest();
+		GestionarSaldoResponse response= context.getGestionarSaldoResponse();
+		
+		List<Integer> invalidStates = Arrays.asList(EstadoUsuarioEnum.ELIMINADO.getCode());
+		Usuario usuarioExistente = usuarioDAO.recuperarUsuarioPorDNI(request.getUsuario().getDni(), invalidStates);
+		
+		if (usuarioExistente == null) {
+			LOGGER.info("El usuario enviado no existe");
+			throw new BackEndException("El usuario enviado no existe");
+		} 
+		
+		MovimientoRest movimientoFromRequest = request.getMovimiento();
+		
+		if (movimientoFromRequest == null || movimientoFromRequest.getMonto().isEmpty()) {
+			LOGGER.info("Debe ingresar un monto");
+			throw new BackEndException("Debe ingresar un monto");	
+		}else if(new Double(movimientoFromRequest.getMonto())<3) {
+			LOGGER.info("La recarga debe ser mayor a 3 soles");
+			throw new BackEndException("El saldo debe ser mayor a 3 soles");	
+		}
+		else {
+			usuarioExistente.setSaldo(usuarioExistente.getSaldo()+ new Double(request.getMovimiento().getMonto()));
+		}
+		
+	    Movimiento movimientoRegistrar = new Movimiento();
+	    movimientoRegistrar.setId(request.getMovimiento().getId());
+	    movimientoRegistrar.setIdTipoTransp(request.getMovimiento().getIdTipoTransp());
+	    movimientoRegistrar.setIdUsuario(request.getUsuario().getDni());
+	    movimientoRegistrar.setMonto(request.getMovimiento().getMonto());
+	    movimientoRegistrar.setSaldo(usuarioExistente.getSaldo());
+	    movimientoRegistrar.setFechaRegistro(new Date());
+	    movimientoRegistrar.setTipoMov(request.getMovimiento().getTipoMov());
+		
+		Usuario usuarioActualizado = usuarioDAO.actualizarUsuario(usuarioExistente);
+		Movimiento movimiento = saldoDAO.registrarUsuario(movimientoRegistrar);
+		
+		
+		if (usuarioActualizado == null || movimiento == null) {
+			throw new BackEndException("No se pudo realizar la recarga");
+		}
+		
+		response.setStatus(new ResponseStatusBase());
+		response.getStatus().setSuccess(Boolean.TRUE);
+		response.getStatus().setMessage("Recarga OK");
+		
+		LOGGER.traceExit(methodName);
+	}	
+	
+	
 	@Override
 	public void eliminar() {
 		// TODO Auto-generated method stub
 		
 	}
-
-//	@Override
-//	public void consultaPenalidad() {
-//		final String methodName = "consultaPenalidad";
-//		LOGGER.traceEntry(methodName);
-//		
-//		UserContext context = ContextHolder.get(UserContext.class);
-//		String dni = context.getDni();
-//		ConsultaUsuarioPenalidadResponse response= context.getConsultaPenalidadResponse();
-//		
-//		UsuarioPenalidad usuarioPenalidad = null;
-//		
-//		usuarioPenalidad = usuarioPenalidadDAO.recuperarPenalidadActivaPorDni(dni, 1);
-//		
-//		if (usuarioPenalidad == null) {
-//			LOGGER.info("No existe penalidad para el dni ingresado");
-//			throw new BackEndException("No existe penalidad para el dni ingresado");
-//		}
-//		
-//		Penalidad penalidad = penalidadDAO.recuperarPenalidadActivaPorCodigo(usuarioPenalidad.getCodigoPenalidad(), 1);
-//		
-//		if(penalidad == null) {
-//			LOGGER.info("No se pudo recuperar la penalidad, datos corruptos");
-//			throw new BackEndException("No se pudo recuperar la penalidad, datos corruptos");
-//		}
-//		
-//		response.setStatus(new ResponseStatusBase());
-//		response.getStatus().setSuccess(Boolean.TRUE);
-//		response.getStatus().setMessage("Consulta penalidad OK");
-//		
-//		response.setUsuario(new UsuarioRest());
-//		response.getUsuario().setDni(dni);
-//		
-//		response.setPenalidad(new PenalidadRest());
-//		response.getPenalidad().setCodigo(penalidad.getCodigo());
-//		response.getPenalidad().setDescripcion(penalidad.getDescripcion());
-//		response.getPenalidad().setMonto(penalidad.getMonto());
-//		
-//		LOGGER.traceExit(methodName);
-//	}
 
 	@Override
 	public void recuperarContrasena() {

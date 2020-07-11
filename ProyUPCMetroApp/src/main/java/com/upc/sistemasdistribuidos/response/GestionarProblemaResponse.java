@@ -1,17 +1,17 @@
 package com.upc.sistemasdistribuidos.response;
 
-import com.upc.sistemasdistribuidos.bussines.ProblemaRest;
+import com.upc.sistemasdistribuidos.bussines.IncidenciaRest;
 import com.upc.sistemasdistribuidos.type.base.ResponseBase;
 
 public class GestionarProblemaResponse extends ResponseBase {
 
-	private ProblemaRest problema;
+	private IncidenciaRest problema;
 
-	public ProblemaRest getProblema() {
+	public IncidenciaRest getProblema() {
 		return problema;
 	}
 
-	public void setProblema(ProblemaRest problema) {
+	public void setProblema(IncidenciaRest problema) {
 		this.problema = problema;
 	}
 }

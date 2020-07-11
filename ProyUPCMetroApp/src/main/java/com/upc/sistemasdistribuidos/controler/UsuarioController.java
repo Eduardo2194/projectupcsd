@@ -17,8 +17,10 @@ import com.upc.sistemasdistribuidos.constantes.ApplicationConstants;
 import com.upc.sistemasdistribuidos.context.ContextHolder;
 import com.upc.sistemasdistribuidos.context.UserContext;
 import com.upc.sistemasdistribuidos.exceptions.BackEndException;
+import com.upc.sistemasdistribuidos.request.GestionarSaldoRequest;
 import com.upc.sistemasdistribuidos.request.GestionarUsuarioRequest;
 import com.upc.sistemasdistribuidos.request.LoginUsuarioRequest;
+import com.upc.sistemasdistribuidos.response.GestionarSaldoResponse;
 import com.upc.sistemasdistribuidos.response.GestionarUsuarioResponse;
 import com.upc.sistemasdistribuidos.response.LoginUsuarioResponse;
 import com.upc.sistemasdistribuidos.service.UserProcessService;
@@ -33,6 +35,7 @@ public class UsuarioController {
 	
 	@Autowired 
 	private UserProcessService processService;
+	
 	
 	@RequestMapping(path = BASE_PATH + "/login", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public @ResponseBody ResponseEntity<LoginUsuarioResponse> processLoginUsuario(@RequestBody LoginUsuarioRequest request) {
@@ -113,6 +116,33 @@ public class UsuarioController {
 		return httpResponse;
 	}
 
+
+	@RequestMapping(path = BASE_PATH +"/saldo", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	public @ResponseBody ResponseEntity<GestionarSaldoResponse> processRecargarSaldo(@RequestBody GestionarSaldoRequest request) {
+		final String methodName = "processRecargarSaldo";
+		LOGGER.traceEntry(methodName);
+		GestionarSaldoResponse response = new GestionarSaldoResponse();
+		ResponseEntity<GestionarSaldoResponse> httpResponse = null;
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR; 
+		try {
+			UserContext context = ContextHolder.get(UserContext.class);
+			context.setGestionarSaldoRequest(request);
+			context.setGestionarSaldoResponse(response);
+
+			processService.recargarSaldo();
+
+			response = context.getGestionarSaldoResponse();
+			httpStatus = HttpStatus.OK; 
+		} catch (BackEndException e) {
+			response.setStatus(Utils.buildErrorValidationStatus(e));
+		} catch (Exception e) {
+			response.setStatus(Utils.buildErrorStatus(e));
+		} 
+		httpResponse = new ResponseEntity<GestionarSaldoResponse>(response, httpStatus);
+		LOGGER.traceExit();
+		return httpResponse;
+	}
+	
 	
 //	@RequestMapping(path = BASE_PATH + "/{dni}/penalidad", method = RequestMethod.GET)
 //    public @ResponseBody ResponseEntity<ConsultaUsuarioPenalidadResponse> consultaUsuarioPenalidad(

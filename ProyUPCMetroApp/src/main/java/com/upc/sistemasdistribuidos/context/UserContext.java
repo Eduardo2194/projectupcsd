@@ -2,10 +2,11 @@ package com.upc.sistemasdistribuidos.context;
 
 import com.upc.sistemasdistribuidos.bussines.UsuarioRest;
 import com.upc.sistemasdistribuidos.request.GestionarProblemaRequest;
+import com.upc.sistemasdistribuidos.request.GestionarSaldoRequest;
 import com.upc.sistemasdistribuidos.request.GestionarUsuarioRequest;
 import com.upc.sistemasdistribuidos.request.LoginUsuarioRequest;
-import com.upc.sistemasdistribuidos.response.ConsultaUsuarioPenalidadResponse;
 import com.upc.sistemasdistribuidos.response.GestionarProblemaResponse;
+import com.upc.sistemasdistribuidos.response.GestionarSaldoResponse;
 import com.upc.sistemasdistribuidos.response.GestionarUsuarioResponse;
 import com.upc.sistemasdistribuidos.response.ListarProblemasResponse;
 import com.upc.sistemasdistribuidos.response.LoginUsuarioResponse;
@@ -20,8 +21,10 @@ public class UserContext extends Context{
 	private GestionarUsuarioRequest gestionarRequest;
 	private GestionarUsuarioResponse gestionarResponse;
 	
+	private GestionarSaldoRequest  gestionarSaldoRequest;
+	private GestionarSaldoResponse gestionarSaldoResponse;
+	
 	private String dni;
-	private ConsultaUsuarioPenalidadResponse consultaPenalidadResponse;
 	
 	private GestionarProblemaRequest registrarProblemaRequest;
 	private GestionarProblemaResponse registrarProblemaResponse;
@@ -64,12 +67,6 @@ public class UserContext extends Context{
 	public void setDni(String dni) {
 		this.dni = dni;
 	}
-	public ConsultaUsuarioPenalidadResponse getConsultaPenalidadResponse() {
-		return consultaPenalidadResponse;
-	}
-	public void setConsultaPenalidadResponse(ConsultaUsuarioPenalidadResponse consultaPenalidadResponse) {
-		this.consultaPenalidadResponse = consultaPenalidadResponse;
-	}
 	public GestionarProblemaRequest getRegistrarProblemaRequest() {
 		return registrarProblemaRequest;
 	}
@@ -88,6 +85,17 @@ public class UserContext extends Context{
 	public void setListarProblemasResponse(ListarProblemasResponse listarProblemasResponse) {
 		this.listarProblemasResponse = listarProblemasResponse;
 	}
-	
+	public GestionarSaldoRequest getGestionarSaldoRequest() {
+		return gestionarSaldoRequest;
+	}
+	public void setGestionarSaldoRequest(GestionarSaldoRequest gestionarSaldoRequest) {
+		this.gestionarSaldoRequest = gestionarSaldoRequest;
+	}
+	public GestionarSaldoResponse getGestionarSaldoResponse() {
+		return gestionarSaldoResponse;
+	}
+	public void setGestionarSaldoResponse(GestionarSaldoResponse gestionarSaldoResponse) {
+		this.gestionarSaldoResponse = gestionarSaldoResponse;
+	}
 	
 }

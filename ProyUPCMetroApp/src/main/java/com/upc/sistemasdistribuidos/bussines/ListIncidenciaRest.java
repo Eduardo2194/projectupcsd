@@ -2,7 +2,7 @@ package com.upc.sistemasdistribuidos.bussines;
 
 import java.util.Date;
 
-public class ListProblemaRest {
+public class ListIncidenciaRest {
 
 	private int codigoProblema;
 	private String nombreConductor;

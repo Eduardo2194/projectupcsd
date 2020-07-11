@@ -7,6 +7,8 @@ public interface UserProcessService {
 	public void registrar();
 	
 	public void actualizar();
+
+	public void recargarSaldo();
 	
 	public void eliminar();
 	

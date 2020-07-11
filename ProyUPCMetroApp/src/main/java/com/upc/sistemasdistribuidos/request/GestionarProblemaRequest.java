@@ -2,19 +2,19 @@ package com.upc.sistemasdistribuidos.request;
 
 import java.io.Serializable;
 
-import com.upc.sistemasdistribuidos.bussines.ProblemaRest;
+import com.upc.sistemasdistribuidos.bussines.IncidenciaRest;
 
 public class GestionarProblemaRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private ProblemaRest problema;
+	private IncidenciaRest problema;
 
-	public ProblemaRest getProblema() {
+	public IncidenciaRest getProblema() {
 		return problema;
 	}
 
-	public void setProblema(ProblemaRest problema) {
+	public void setProblema(IncidenciaRest problema) {
 		this.problema = problema;
 	}
 }
