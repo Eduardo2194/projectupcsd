@@ -19,9 +19,12 @@ import com.upc.sistemasdistribuidos.context.UserContext;
 import com.upc.sistemasdistribuidos.exceptions.BackEndException;
 import com.upc.sistemasdistribuidos.request.GestionarSaldoRequest;
 import com.upc.sistemasdistribuidos.request.GestionarUsuarioRequest;
+import com.upc.sistemasdistribuidos.request.GestionarVisitaRequest;
 import com.upc.sistemasdistribuidos.request.LoginUsuarioRequest;
+import com.upc.sistemasdistribuidos.response.GestionarListaVisitasResp;
 import com.upc.sistemasdistribuidos.response.GestionarSaldoResponse;
 import com.upc.sistemasdistribuidos.response.GestionarUsuarioResponse;
+import com.upc.sistemasdistribuidos.response.GestionarVisitaResponse;
 import com.upc.sistemasdistribuidos.response.LoginUsuarioResponse;
 import com.upc.sistemasdistribuidos.service.UserProcessService;
 
@@ -141,7 +144,7 @@ public class UsuarioController {
 		httpResponse = new ResponseEntity<GestionarSaldoResponse>(response, httpStatus);
 		LOGGER.traceExit();
 		return httpResponse;
-	}
+	}	
 	
 	
 //	@RequestMapping(path = BASE_PATH + "/{dni}/penalidad", method = RequestMethod.GET)
@@ -171,28 +174,54 @@ public class UsuarioController {
 //		return httpResponse;
 //	}
 	
-	@RequestMapping(path = BASE_PATH + "/recuperar", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public @ResponseBody ResponseEntity<GestionarUsuarioResponse> processRecuperarContrasena(@RequestBody GestionarUsuarioRequest request) {
-		final String methodName = "processRecuperarContrasena";
+	@RequestMapping(path = BASE_PATH +"/visita", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public @ResponseBody ResponseEntity<GestionarVisitaResponse> registrarVisita(@RequestBody GestionarVisitaRequest request) {
+		final String methodName = "processRegistrarVisita";
 		LOGGER.traceEntry(methodName);
-		GestionarUsuarioResponse response = new GestionarUsuarioResponse();
-		ResponseEntity<GestionarUsuarioResponse> httpResponse = null;
+		GestionarVisitaResponse response = new GestionarVisitaResponse();
+		ResponseEntity<GestionarVisitaResponse> httpResponse = null;
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR; 
 		try {
 			UserContext context = ContextHolder.get(UserContext.class);
-			context.setGestionarRequest(request);
-			context.setGestionarResponse(response);
+			context.setGestionarVisitaRequest(request);
+			context.setGestionarVisitaResponse(response);
 
-			processService.recuperarContrasena();
+			processService.registrarVisita();
 
-			response = context.getGestionarResponse();
+			response = context.getGestionarVisitaResponse();
+			httpStatus = HttpStatus.OK; 
+		} catch (BackEndException e) {
+			response.setStatus(Utils.buildErrorValidationStatus(e));
+		} catch (Exception e) {
+			response.setStatus(Utils.buildErrorStatus(e));
+		} 
+		httpResponse = new ResponseEntity<GestionarVisitaResponse>(response, httpStatus);
+		LOGGER.traceExit();
+		return httpResponse;
+	}
+	
+	
+	@RequestMapping(path = BASE_PATH + "/listarvisitas", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<GestionarListaVisitasResp> listarVisitas() {
+		final String methodName = "processListarVisitas";
+		LOGGER.traceEntry(methodName);
+		GestionarListaVisitasResp response = new GestionarListaVisitasResp();
+		ResponseEntity<GestionarListaVisitasResp> httpResponse = null;
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR; 
+		try {
+			UserContext context = ContextHolder.get(UserContext.class);
+			context.setListarVisitasRespones(response);
+
+			processService.listarVisitas();
+
+			response = context.getListarVisitasRespones();
 			httpStatus = HttpStatus.OK;
 		} catch (BackEndException e) {
 			response.setStatus(Utils.buildErrorValidationStatus(e));
 		} catch (Exception e) {
 			response.setStatus(Utils.buildErrorStatus(e));
 		} 
-		httpResponse = new ResponseEntity<GestionarUsuarioResponse>(response, httpStatus);
+		httpResponse = new ResponseEntity<GestionarListaVisitasResp>(response, httpStatus);
 		LOGGER.traceExit();
 		return httpResponse;
 	}

@@ -4,10 +4,13 @@ import com.upc.sistemasdistribuidos.bussines.UsuarioRest;
 import com.upc.sistemasdistribuidos.request.GestionarProblemaRequest;
 import com.upc.sistemasdistribuidos.request.GestionarSaldoRequest;
 import com.upc.sistemasdistribuidos.request.GestionarUsuarioRequest;
+import com.upc.sistemasdistribuidos.request.GestionarVisitaRequest;
 import com.upc.sistemasdistribuidos.request.LoginUsuarioRequest;
+import com.upc.sistemasdistribuidos.response.GestionarListaVisitasResp;
 import com.upc.sistemasdistribuidos.response.GestionarProblemaResponse;
 import com.upc.sistemasdistribuidos.response.GestionarSaldoResponse;
 import com.upc.sistemasdistribuidos.response.GestionarUsuarioResponse;
+import com.upc.sistemasdistribuidos.response.GestionarVisitaResponse;
 import com.upc.sistemasdistribuidos.response.ListarProblemasResponse;
 import com.upc.sistemasdistribuidos.response.LoginUsuarioResponse;
 
@@ -24,6 +27,9 @@ public class UserContext extends Context{
 	private GestionarSaldoRequest  gestionarSaldoRequest;
 	private GestionarSaldoResponse gestionarSaldoResponse;
 	
+    private GestionarVisitaRequest gestionarVisitaRequest;
+    private GestionarVisitaResponse gestionarVisitaResponse;
+	
 	private String dni;
 	
 	private GestionarProblemaRequest registrarProblemaRequest;
@@ -31,6 +37,26 @@ public class UserContext extends Context{
 	
 	private ListarProblemasResponse listarProblemasResponse;
 	
+	private GestionarListaVisitasResp listarVisitasRespones;
+	
+	public GestionarListaVisitasResp getListarVisitasRespones() {
+		return listarVisitasRespones;
+	}
+	public void setListarVisitasRespones(GestionarListaVisitasResp listarVisitasRespones) {
+		this.listarVisitasRespones = listarVisitasRespones;
+	}
+	public GestionarVisitaRequest getGestionarVisitaRequest() {
+		return gestionarVisitaRequest;
+	}
+	public void setGestionarVisitaRequest(GestionarVisitaRequest gestionarVisitaRequest) {
+		this.gestionarVisitaRequest = gestionarVisitaRequest;
+	}
+	public GestionarVisitaResponse getGestionarVisitaResponse() {
+		return gestionarVisitaResponse;
+	}
+	public void setGestionarVisitaResponse(GestionarVisitaResponse gestionarVisitaResponse) {
+		this.gestionarVisitaResponse = gestionarVisitaResponse;
+	}
 	public UsuarioRest getUserRestEntity() {
 		return userRestEntity;
 	}

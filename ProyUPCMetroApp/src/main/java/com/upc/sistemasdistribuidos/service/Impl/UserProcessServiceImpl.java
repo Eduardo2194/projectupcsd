@@ -1,5 +1,6 @@
 package com.upc.sistemasdistribuidos.service.Impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -18,22 +19,28 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.upc.sistemasdistribuidos.bussines.IndicadorVisitaRest;
 import com.upc.sistemasdistribuidos.bussines.MovimientoRest;
 import com.upc.sistemasdistribuidos.bussines.UsuarioRest;
 import com.upc.sistemasdistribuidos.context.ContextHolder;
 import com.upc.sistemasdistribuidos.context.UserContext;
 import com.upc.sistemasdistribuidos.dao.SaldoDAO;
 import com.upc.sistemasdistribuidos.dao.UsuarioDAO;
+import com.upc.sistemasdistribuidos.dao.VisitaDAO;
 import com.upc.sistemasdistribuidos.enums.EstadoUsuarioEnum;
 import com.upc.sistemasdistribuidos.enums.TipoUsuarioEnum;
 import com.upc.sistemasdistribuidos.exceptions.BackEndException;
 import com.upc.sistemasdistribuidos.model.Movimiento;
 import com.upc.sistemasdistribuidos.model.Usuario;
+import com.upc.sistemasdistribuidos.model.Visita;
 import com.upc.sistemasdistribuidos.request.GestionarSaldoRequest;
 import com.upc.sistemasdistribuidos.request.GestionarUsuarioRequest;
+import com.upc.sistemasdistribuidos.request.GestionarVisitaRequest;
 import com.upc.sistemasdistribuidos.request.LoginUsuarioRequest;
+import com.upc.sistemasdistribuidos.response.GestionarListaVisitasResp;
 import com.upc.sistemasdistribuidos.response.GestionarSaldoResponse;
 import com.upc.sistemasdistribuidos.response.GestionarUsuarioResponse;
+import com.upc.sistemasdistribuidos.response.GestionarVisitaResponse;
 import com.upc.sistemasdistribuidos.response.LoginUsuarioResponse;
 import com.upc.sistemasdistribuidos.service.UserProcessService;
 import com.upc.sistemasdistribuidos.service.ValidationService;
@@ -54,7 +61,10 @@ public class UserProcessServiceImpl implements UserProcessService {
 	
 	@Autowired
 	private SaldoDAO saldoDAO;
-//	
+
+	@Autowired
+	private VisitaDAO visitaDAO;
+	//	
 //	@Autowired
 //	private PenalidadDAO penalidadDAO;
 	
@@ -364,6 +374,88 @@ public class UserProcessServiceImpl implements UserProcessService {
 		response.setStatus(new ResponseStatusBase());
 		response.getStatus().setSuccess(Boolean.TRUE);
 		response.getStatus().setMessage("Se envio un mensaje a su correo electronico");
+	}
+
+	@Override
+	public void registrarVisita() {
+		final String methodName = "registrar";
+		LOGGER.traceEntry(methodName);
+		
+		
+		UserContext context = ContextHolder.get(UserContext.class);
+		GestionarVisitaRequest request= context.getGestionarVisitaRequest();
+		GestionarVisitaResponse response= context.getGestionarVisitaResponse();
+		
+		Visita fecVisitaExistente = visitaDAO.findByFecvisita(request.getVisitas().getFecvisita());
+		
+		if (fecVisitaExistente != null) {
+			fecVisitaExistente.setCantvisita(fecVisitaExistente.getCantvisita()+request.getVisitas().getCantvisita());
+			Visita visita = visitaDAO.registrarVisita(fecVisitaExistente);
+			
+			if(visita!=null) {
+				
+				response.setStatus(new ResponseStatusBase());
+				response.getStatus().setSuccess(Boolean.TRUE);
+				response.getStatus().setMessage("Actualización OK");
+				response.setIndicador(new IndicadorVisitaRest());
+				response.getIndicador().setFecvisita(visita.getFecvisita());
+				response.getIndicador().setCantvisita(visita.getCantvisita());
+
+			} else {
+				throw new BackEndException("No se pudo actualizar la visita");
+			}
+			LOGGER.traceExit(methodName);
+
+		}else {
+			
+			Visita visitaRegistrar = new Visita();
+			visitaRegistrar.setFecvisita(request.getVisitas().getFecvisita());
+			visitaRegistrar.setCantvisita(request.getVisitas().getCantvisita());
+			Visita visita = visitaDAO.registrarVisita(visitaRegistrar);
+			
+			if(visita!=null) {
+				response.setStatus(new ResponseStatusBase());
+				response.getStatus().setSuccess(Boolean.TRUE);
+				response.getStatus().setMessage("Registro OK");
+				response.setIndicador(new IndicadorVisitaRest());
+				response.getIndicador().setFecvisita(visita.getFecvisita());
+				response.getIndicador().setCantvisita(visita.getCantvisita());
+			} else {
+				throw new BackEndException("No se pudo registrar la visita");
+			}
+			LOGGER.traceExit(methodName);
+
+		}
+			
+	}
+
+	@Override
+	public void listarVisitas() {
+		final String methodName = "listarVisita";
+		LOGGER.traceEntry(methodName);
+		
+		UserContext context = ContextHolder.get(UserContext.class);
+		GestionarListaVisitasResp response= context.getListarVisitasRespones();
+		
+		List<Visita> fecVisitaExistente = visitaDAO.findVisitasAll();
+		if(fecVisitaExistente!=null) {
+			response.setStatus(new ResponseStatusBase());
+			response.getStatus().setSuccess(Boolean.TRUE);
+			response.getStatus().setMessage("Consulta OK");
+
+		List<IndicadorVisitaRest> indicador = new ArrayList<>();
+		
+		for (int i = 0; i < fecVisitaExistente.size(); i++) {
+			IndicadorVisitaRest indicadorRest = new IndicadorVisitaRest();
+			indicadorRest.setCantvisita(fecVisitaExistente.get(i).getCantvisita());
+			indicadorRest.setFecvisita(fecVisitaExistente.get(i).getFecvisita());
+			indicador.add(indicadorRest);
+		}
+		response.setIndicador(indicador);
+		}else {
+			throw new BackEndException("No se pudo listar visitas");			
+		}
+		LOGGER.traceExit(methodName);
 	}
 	
 }

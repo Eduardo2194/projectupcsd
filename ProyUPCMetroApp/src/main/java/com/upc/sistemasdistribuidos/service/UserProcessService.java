@@ -15,4 +15,8 @@ public interface UserProcessService {
 //	public void consultaPenalidad();
 	
 	public void recuperarContrasena();
+
+	public void registrarVisita();
+
+	public void listarVisitas();
 }
